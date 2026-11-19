@@ -50,6 +50,10 @@ go test ./core
 - **Collegamento assistito.** Si usa solo con il consenso esplicito dell'utente. I server STUN pubblici (Google, Cloudflare) ricevono solo l'indirizzo IP. I file viaggiano sempre direttamente tra i due dispositivi.
 - **Firewall.** Porte TCP di ricezione: 47760–47763 (`sudo ufw allow 47760:47763/tcp`).
 
+## Uso dell'intelligenza artificiale
+
+PiqLink è stato sviluppato con un ampio uso dell'intelligenza artificiale generativa: gran parte del codice, dei test e della documentazione è stata scritta con Claude (Anthropic). Il progetto, le scelte e le verifiche sono di Romeo Nazzari (BrunoSoft). Ogni versione viene provata su dispositivi reali prima della pubblicazione.
+
 ## Lingue
 
 Italiano, inglese, spagnolo e cinese.
@@ -61,5 +65,9 @@ Italiano, inglese, spagnolo e cinese.
 PiqLink transfers files and folders directly between computers and phones with a short code or QR: no server in between, no sign-up, no size limits. It is compatible with PiqLink 2.5 for Windows and Android.
 
 Build with `CGO_ENABLED=0 go build -o piqlink ./cmd/piqlinux`. Run `./piqlink` for the window (served on 127.0.0.1 only and shown by the browser), or `./piqlink receive` / `./piqlink send FILE...` in a terminal.
+
+### Use of generative AI
+
+PiqLink was developed with substantial use of generative AI: most of the code, tests and documentation were written with Claude (Anthropic). Design decisions, review and testing are by Romeo Nazzari (BrunoSoft), and every release is tested on real devices before publication.
 
 © 2026 Romeo Nazzari — BrunoSoft · [www.brunosoft.eu](https://www.brunosoft.eu)
