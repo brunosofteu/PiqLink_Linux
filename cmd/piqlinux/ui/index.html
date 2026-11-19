@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>PiqLink</title>
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="stylesheet" href="base.css">
+<style>
+.seg{display:flex;background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:4px;gap:4px;margin-bottom:14px}
+.seg button{flex:1;border:0;border-radius:10px;padding:10px;background:transparent;color:var(--text2);font-weight:600;cursor:pointer}
+.seg button.on{background:var(--primary);color:#fff}
+.seg button:disabled{opacity:.5;cursor:default}
+.setrow{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--line)}
+.setrow:first-child{border-top:0}
+.setrow .l{flex:1;min-width:0}
+.setrow .l b{display:block}
+.setrow .l span{display:block;color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis}
+.setrow input[type=text]{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);width:220px}
+.switch{position:relative;width:50px;height:28px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.switch i{position:absolute;inset:0;background:var(--border);border-radius:14px;cursor:pointer;transition:.2s}
+.switch i:before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked+i{background:var(--primary)}
+.switch input:checked+i:before{transform:translateX(22px)}
+.banner{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--dropLine);border-radius:16px;padding:14px 16px;margin-bottom:16px}
+.banner img{width:36px;height:36px}
+.banner div{flex:1;color:var(--text2);font-size:14px}
+.notice{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px 14px;color:var(--text2);font-size:14px;margin-bottom:14px}
+.hint{color:var(--faint);font-size:12px;margin-top:10px}
+code{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:1px 6px;font-size:12px}
+.homehero{text-align:center;padding:30px 0 10px}
+.homehero img{width:120px;height:120px}
+.homehero .word{font-size:38px;margin-top:8px}
+.homehero p{max-width:420px;margin:14px auto 24px}
+.home2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.home2 .nav{min-height:96px}
+#overlay{position:fixed;inset:0;background:rgba(2,6,16,.75);display:grid;place-items:center;z-index:9}
+#overlay div{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px 26px;max-width:380px;text-align:center}
+.okc.bad{background:var(--redBg);border-color:var(--red);color:var(--red)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="side">
+  <div class="mark"><img src="img/symbol.png" alt=""><div class="word">Piq<i>Link</i><small>Direct Transfer</small></div></div>
+  <div style="height:16px"></div>
+  <button class="nav" id="navSend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg><div><b data-t="send"></b><span data-t="sendSub"></span></div></button>
+  <button class="nav" id="navRecv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg><div><b data-t="recv"></b><span data-t="recvSub"></span></div></button>
+  <div class="sidelinks">
+    <button id="navSet"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span data-t="settings"></span></button>
+    <button id="navInfo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Info</button>
+    <button id="navOpen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span data-t="openDir"></span></button>
+  </div>
+  <div class="sidefoot"><a href="https://www.brunosoft.eu" target="_blank" rel="noopener"><img src="img/brunosoft.png" alt="BrunoSoft"></a><span class="ver" id="ver">v2.5 Linux</span></div>
+</aside>
+
+<main><div class="wrap">
+
+<div id="notice" class="notice hidden"></div>
+
+<!-- HOME -->
+<section id="s-home">
+  <div class="banner hidden" id="menuAsk"><img src="img/symbol.png" alt=""><div data-t="menuAsk"></div><button class="btn sec" id="menuNo" data-t="noThanks"></button><button class="btn" id="menuYes" data-t="add"></button></div>
+  <div class="homehero">
+    <img src="img/symbol.png" alt="PiqLink">
+    <div class="word">Piq<i>Link</i><small>Direct Transfer</small></div>
+    <p data-t="tagline"></p>
+  </div>
+  <div class="home2">
+    <button class="nav sel" id="homeSend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg><div><b data-t="send"></b><span data-t="sendSub"></span></div></button>
+    <button class="nav" id="homeRecv" style="border:2px solid var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg><div><b data-t="recv"></b><span data-t="recvSub"></span></div></button>
+  </div>
+  <button class="homedrop" id="homeDrop" style="display:flex!important"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span><b data-t="dropTitle"></b><br><span class="muted" data-t="dropSub"></span></span></button>
+</section>
+
+<!-- SEND -->
+<section id="s-send" class="hidden">
+  <h1 data-t="send"></h1>
+  <div class="card">
+    <div class="drop" id="drop"><b data-t="dropTitle"></b><br><span data-t="dropSub"></span></div>
+    <input type="file" id="pick" multiple hidden>
+    <input type="file" id="pickDir" webkitdirectory multiple hidden>
+    <div class="row" style="margin-top:10px"><button class="btn sec" id="addFiles" data-t="addFiles"></button><button class="btn sec" id="addDir" data-t="addDir"></button></div>
+    <ul class="files" id="sendList"></ul>
+    <div class="muted" id="sendTotal"></div>
+  </div>
+  <div class="card">
+    <h2 data-t="codeFromRecv"></h2>
+    <p class="muted" data-t="codeFromRecvSub"></p>
+    <input class="codein" id="sendCode" maxlength="17" autocomplete="off" spellcheck="false" placeholder="ABC-123">
+    <div class="err" id="sendErr"></div>
+    <div class="row" style="margin-top:8px"><button class="btn" id="sendGo" data-t="sendGo"></button></div>
+    <div class="hidden replyShow" style="margin-top:14px;text-align:center;background:var(--bg);border:1px solid var(--accent);border-radius:14px;padding:14px">
+      <b data-t="replyShowTitle"></b>
+      <div class="code replyCode" style="font-size:36px"></div>
+      <p class="muted" data-t="replyShowSub" style="margin:0"></p>
+    </div>
+    <p class="muted" style="margin-top:14px" data-t="orShow"></p>
+    <div class="row"><button class="btn sec" id="sendShow" data-t="genCode"></button></div>
+  </div>
+</section>
+
+<!-- CODE SHOWN BY THIS COMPUTER (receive, or send in reverse) -->
+<section id="s-code" class="hidden">
+  <h1 id="codeH"></h1>
+  <div class="seg"><button id="segLan" data-t="lan"></button><button id="segNet" data-t="net"></button></div>
+  <div class="card" style="text-align:center">
+    <h2 id="codeTitle"></h2>
+    <div class="code" id="codeBig">···-···</div>
+    <div class="qr" id="qr"></div>
+    <div class="status"><span class="dot p" id="codeDot"></span><span id="codeStatus"></span></div>
+    <div class="err" id="codeErr" style="text-align:left"></div>
+    <div class="row hidden" id="assistRow" style="margin-top:10px"><button class="btn" id="assistBtn" data-t="useAssist"></button></div>
+    <div class="hidden" id="replyBox" style="text-align:left;margin-top:12px">
+      <b data-t="replyTitle"></b>
+      <p class="muted" data-t="replySub" style="margin:4px 0 8px"></p>
+      <input class="codein" id="replyIn" maxlength="11" autocomplete="off" spellcheck="false" placeholder="ABCDE-12345">
+      <div class="err" id="replyMsg"></div>
+      <div class="row" style="margin-top:8px"><button class="btn" id="replyGo" data-t="confirmReply"></button></div>
+    </div>
+    <p class="hint" data-t="fwHint"></p>
+  </div>
+  <div class="row"><button class="btn sec" id="haveCode" data-t="haveCode"></button><button class="btn ghost" id="codeCancel" data-t="cancel"></button></div>
+</section>
+
+<!-- RECEIVE WITH THE SENDER'S CODE -->
+<section id="s-recvcode" class="hidden">
+  <h1 data-t="recv"></h1>
+  <div class="card">
+    <h2 data-t="senderCode"></h2>
+    <p class="muted" data-t="senderCodeSub"></p>
+    <input class="codein" id="recvCode" maxlength="17" autocomplete="off" spellcheck="false" placeholder="ABC-123">
+    <div class="err" id="recvErr"></div>
+    <div class="row" style="margin-top:8px"><button class="btn" id="recvGo" data-t="connect"></button></div>
+    <div class="hidden replyShow" style="margin-top:14px;text-align:center;background:var(--bg);border:1px solid var(--accent);border-radius:14px;padding:14px">
+      <b data-t="replyShowTitle"></b>
+      <div class="code replyCode" style="font-size:36px"></div>
+      <p class="muted" data-t="replyShowSub" style="margin:0"></p>
+    </div>
+  </div>
+  <div class="row"><button class="btn ghost" id="recvBack" data-t="back"></button></div>
+</section>
+
+<!-- CONFIRM -->
+<section id="s-confirm" class="hidden">
+  <div class="card">
+    <h2 id="askTitle"></h2>
+    <ul class="files" id="askList"></ul>
+    <div class="muted" id="askTotal"></div>
+  </div>
+  <div class="row"><button class="btn ghost" id="askNo" data-t="reject"></button><button class="btn" id="askYes" data-t="accept"></button></div>
+</section>
+
+<!-- TRANSFER -->
+<section id="s-transfer" class="hidden">
+  <div class="card">
+    <h2 id="xTitle"></h2>
+    <div class="muted" id="xFile"></div>
+    <div class="bar"><i id="xBar"></i></div>
+    <div class="stats"><span id="xPct">0%</span><span id="xSpeed"></span><span id="xLeft"></span></div>
+    <div class="status"><span class="dot g"></span><span data-t="direct"></span></div>
+  </div>
+  <div class="row"><button class="btn ghost" id="xCancel" data-t="cancel"></button></div>
+</section>
+
+<!-- RESULT -->
+<section id="s-result" class="hidden">
+  <div class="card" style="text-align:center">
+    <div class="okc" id="resIcon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path id="resPath" d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h2 id="resTitle"></h2>
+    <p id="resText"></p>
+  </div>
+  <div class="row"><button class="btn ghost" id="resHome" data-t="home"></button><button class="btn" id="resOpen" data-t="openDir"></button></div>
+</section>
+
+<!-- CONSENT (assisted connection) -->
+<section id="s-consent" class="hidden">
+  <h1 data-t="assistTitle"></h1>
+  <div class="card">
+    <p data-t="consentText"></p>
+    <ul class="list" style="list-style:none;padding:0;margin:14px 0 0">
+      <li style="margin:8px 0">✓ <span data-t="consent1"></span></li>
+      <li style="margin:8px 0">✓ <span data-t="consent2"></span></li>
+      <li style="margin:8px 0">✓ <span data-t="consent3"></span></li>
+    </ul>
+  </div>
+  <div class="row"><button class="btn ghost" id="consNo" data-t="notNow"></button><button class="btn" id="consYes" data-t="allow"></button></div>
+</section>
+
+<!-- SETTINGS -->
+<section id="s-settings" class="hidden">
+  <h1 data-t="settings"></h1>
+  <div class="card" style="padding-top:4px;padding-bottom:4px">
+    <div class="setrow"><div class="l"><b data-t="devName"></b><span data-t="devNameSub"></span></div><input type="text" id="setName" maxlength="40"></div>
+    <div class="setrow"><div class="l"><b data-t="saveIn"></b><span id="setDir"></span></div><button class="btn sec" id="setDirBtn" data-t="change"></button></div>
+    <div class="setrow"><div class="l"><b data-t="askBefore"></b><span data-t="askBeforeSub"></span></div><label class="switch"><input type="checkbox" id="setConfirm"><i></i></label></div>
+    <div class="setrow"><div class="l"><b data-t="assistSet"></b><span data-t="assistSetSub"></span></div><label class="switch"><input type="checkbox" id="setAssist"><i></i></label></div>
+    <div class="setrow"><div class="l"><b data-t="language"></b></div><select class="lang" id="lang"><option value="it">Italiano</option><option value="en">English</option><option value="es">Español</option><option value="zh">中文</option></select></div>
+    <div class="setrow"><div class="l"><b data-t="menu"></b><span data-t="menuSub"></span></div><button class="btn sec" id="setMenu" data-t="add"></button></div>
+  </div>
+  <p class="hint" data-t="fwHint"></p>
+  <div class="row" style="margin-top:14px"><button class="btn ghost" id="quit" data-t="quit"></button></div>
+</section>
+
+<div class="foot"><a href="https://www.brunosoft.eu" target="_blank" rel="noopener"><img src="img/brunosoft.png" alt="BrunoSoft"></a><span id="ver2">v2.5 Linux</span></div>
+</div></main>
+</div>
+
+<dialog id="info">
+  <div class="hero" style="padding-top:0"><img src="img/symbol.png" alt=""><div class="word">Piq<i>Link</i><small id="infoVer">Direct Transfer 2.5 · Linux</small></div></div>
+  <p data-t="infoText"></p>
+  <p style="text-align:center;margin:16px 0"><a href="https://www.brunosoft.eu" target="_blank" rel="noopener"><img src="img/brunosoft.png" alt="BrunoSoft" style="height:18px"></a><br><a href="https://www.brunosoft.eu" target="_blank" rel="noopener">www.brunosoft.eu</a></p>
+  <form method="dialog"><button class="btn" style="width:100%" data-t="close"></button></form>
+</dialog>
+
+<div id="overlay" class="hidden"><div><p id="overlayText"></p><div class="bar"><i id="overlayBar"></i></div></div></div>
+
+<script src="app.js"></script>
+</body>
+</html>
